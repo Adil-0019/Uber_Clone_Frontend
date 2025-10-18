@@ -1,5 +1,8 @@
 import React,{useState} from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import {UserDataContext} from "../context/userContext";
+
 
 const UserSignup = () => {
   const [email, setEmail] = useState('')
@@ -7,16 +10,31 @@ const UserSignup = () => {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [userData, setUserData] = useState({})
-  const submitHandler=(e)=>{
+
+  const navigate = useNavigate()
+  const {user, setUser} = React.useContext(UserDataContext)
+  
+  
+  const submitHandler= async (e)=>{
     e.preventDefault()
-      const newUser = {
-    fullName: {
-      firstName,
-      lastName,
-    },
-    email,
-    password,
-  };
+    const newUser = {
+      fullname: {
+        firstname: firstName,
+        lastname: lastName ,
+      },
+      email: email,
+      password: password,
+    };
+
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser)
+    
+    if(response.status === 201){
+      const data = response.data
+
+      setUser(data.user)
+      localStorage.setItem('token', data.token)
+      navigate('/home')
+    }
     
     setEmail('')
     setPassword('')
@@ -34,7 +52,7 @@ const UserSignup = () => {
         <form onSubmit={(e)=>{
           submitHandler(e)
         }}>
-           <h3 className="text-lg font-medium mb-2">What's your fullName</h3>
+           <h3 className="text-lg font-medium mb-2">What's your Full Name</h3>
             <div className="flex gap-4 mb-6">
                 <input
             className="bg-[#eeeeee] w-1/2 rounded px-4 py-2 border text-lg placeholder:text-base"
@@ -80,7 +98,7 @@ const UserSignup = () => {
             }}
           />
           <button className="bg-[#111] text-white font-semibold mb-3 rounded px-4 py-2 border w-full text-lg placeholder:text-base">
-            Login
+            Create account
           </button>
         </form>
           <p className="text-center">
