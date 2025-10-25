@@ -1,15 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react'
-import {UserDataContext} from "../context/userContext";
+import { CaptainDataContext } from '../context/CaptainContext';
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
-const UserProtectWrapper = ({
+const CaptainProtectedWrapper = ({
     children
 }) => {
     const token = localStorage.getItem('token')
     const navigate = useNavigate()
-    const { user, setUser } = useContext(UserDataContext)
-    const [ isLoading, setIsLoading ] = useState(true)
+    const {captain, setCaptain} = useContext(CaptainDataContext)
+
+    
 
     useEffect(() => {
         if (!token) {
@@ -46,4 +47,4 @@ const UserProtectWrapper = ({
     )
 }
 
-export default UserProtectWrapper
+export default CaptainProtectedWrapper
